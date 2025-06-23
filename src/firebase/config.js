@@ -1,9 +1,11 @@
+// firebase/config.js
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getAuth,
   setPersistence,
   browserLocalPersistence,
 } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,9 +17,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-//This is for server side rendering
+// This is for server-side rendering
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
-setPersistence(auth, browserLocalPersistence); // 👈 persist session across reloads
-export { app, auth };
-// run npm i react-firebase-hooks to get some really cool packages to work with firebase
+setPersistence(auth, browserLocalPersistence); // Persist session across reloads
+const db = getFirestore(app); // Initialize Firestore
+
+export { app, auth, db };
