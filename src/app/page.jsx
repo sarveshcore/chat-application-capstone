@@ -14,6 +14,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { FiSearch, FiX } from "react-icons/fi"; // Added FiX for close button
+import { FaUserCircle } from "react-icons/fa"; // Added for profile icon
 
 export default function Home() {
   const [user, loading, error] = useAuthState(auth);
@@ -150,6 +151,10 @@ export default function Home() {
     }
   };
 
+  const handleProfileClick = () => {
+    router.push("/profile");
+  };
+
   const filteredMessages = messages.filter((message) =>
     message.text.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -164,8 +169,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-start p-8 font-sans w-full">
-      {/* Header with Search and Logout */}
+      {/* Header with Profile, Search, and Logout */}
       <div className="w-full max-w-3xl flex justify-end items-center mb-10 space-x-4">
+        <button
+          onClick={handleProfileClick}
+          className="bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-full shadow-md transition duration-200 transform hover:scale-105"
+          aria-label="View profile"
+        >
+          <FaUserCircle size={20} />
+        </button>
         <div ref={searchContainerRef} className="relative flex items-center">
           <div
             className={`flex items-center transition-all duration-300 ease-in-out ${
