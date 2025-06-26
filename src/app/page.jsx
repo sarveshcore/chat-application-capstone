@@ -170,52 +170,57 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-start p-8 font-sans w-full">
       {/* Header with Profile, Search, and Logout */}
-      <div className="w-full max-w-3xl flex justify-end items-center mb-10 space-x-4">
+      <div className="w-full max-w-3xl flex items-center justify-between mb-10">
+        {/* Profile button on the left */}
         <button
           onClick={handleProfileClick}
-          className="bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-full shadow-md transition duration-200 transform hover:scale-105"
+          className="bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-full shadow-md transition duration-200 transform hover:scale-105 cursor-pointer"
           aria-label="View profile"
         >
-          <FaUserCircle size={20} />
+          <FaUserCircle size={28} />
         </button>
-        <div ref={searchContainerRef} className="relative flex items-center">
-          <div
-            className={`flex items-center transition-all duration-300 ease-in-out ${
-              isSearchOpen ? "w-64 opacity-100" : "w-0 opacity-0"
-            } overflow-hidden`}
-          >
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search messages..."
-              className="w-full p-2 pr-8 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white transition-all duration-200"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-2 text-gray-500 hover:text-gray-700"
-                aria-label="Clear search"
-              >
-                <FiX size={16} />
-              </button>
-            )}
+
+        {/* The rest of your header (search, logout, etc.) */}
+        <div className="flex items-center space-x-4">
+          <div ref={searchContainerRef} className="relative flex items-center">
+            <div
+              className={`flex items-center transition-all duration-300 ease-in-out ${
+                isSearchOpen ? "w-64 opacity-100" : "w-0 opacity-0"
+              } overflow-hidden`}
+            >
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search messages..."
+                className="w-full p-2 pr-8 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white transition-all duration-200"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 text-gray-500 hover:text-gray-700"
+                  aria-label="Clear search"
+                >
+                  <FiX size={16} />
+                </button>
+              )}
+            </div>
+            <button
+              onClick={toggleSearch}
+              className="ml-2 bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
+              aria-label={isSearchOpen ? "Close search" : "Open search"}
+            >
+              <FiSearch size={20} />
+            </button>
           </div>
           <button
-            onClick={toggleSearch}
-            className="ml-2 bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
-            aria-label={isSearchOpen ? "Close search" : "Open search"}
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
           >
-            <FiSearch size={20} />
+            Logout
           </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
-        >
-          Logout
-        </button>
       </div>
 
       {/* Chat Container */}
