@@ -27,6 +27,7 @@ export default function Home() {
   const inputRef = useRef(null);
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Load messages from Firestore chatroom and auto-clear at 30 messages
   useEffect(() => {
@@ -106,6 +107,8 @@ export default function Home() {
   }, [isSearchOpen]);
 
   const handleLogout = async () => {
+    const confirmed = window.confirm("Are you sure you want to log out?");
+    if (!confirmed) return;
     try {
       await signOut(auth);
       console.log("User signed out");
@@ -215,8 +218,8 @@ export default function Home() {
             </button>
           </div>
           <button
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
+            onClick={() => setShowLogoutModal(true)}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow-md transition duration-200"
           >
             Logout
           </button>
@@ -283,6 +286,38 @@ export default function Home() {
           </div>
         </form>
       </div>
+
+      {showLogoutModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white/30 backdrop-blur-sm z-50">
+          <div className="bg-white rounded-lg p-8 shadow-lg text-center">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
+              Are you sure you want to log out?
+            </h2>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={async () => {
+                  setShowLogoutModal(false);
+                  try {
+                    await signOut(auth);
+                    console.log("User signed out");
+                  } catch (err) {
+                    console.error("Error signing out:", err);
+                  }
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow-md transition duration-200"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md shadow-md transition duration-200"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Inline CSS for Animations and Scrollbar */}
       <style jsx>{`
