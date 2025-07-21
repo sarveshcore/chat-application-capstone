@@ -14,6 +14,10 @@ export default function Profile() {
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(user?.photoURL || "");
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoError, setPhotoError] = useState("");
 
   // Redirect to signup if not authenticated
   useEffect(() => {
@@ -50,6 +54,41 @@ export default function Profile() {
     setUpdating(false);
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPhotoFile(file);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handlePhotoUpload = async () => {
+    if (!photoFile) return;
+    setPhotoUploading(true);
+    setPhotoError("");
+    try {
+      // Upload to a storage service (Firebase Storage recommended for production)
+      // For demo: convert to base64 and use as photoURL (not recommended for real apps)
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          await updateProfile(auth.currentUser, { photoURL: reader.result });
+          setPhotoFile(null);
+          setPhotoUploading(false);
+          setPhotoError("");
+          setUpdateSuccess(true);
+        } catch (err) {
+          setPhotoError("Failed to update photo.");
+          setPhotoUploading(false);
+        }
+      };
+      reader.readAsDataURL(photoFile);
+    } catch (err) {
+      setPhotoError("Failed to update photo.");
+      setPhotoUploading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gray-900">
@@ -67,13 +106,26 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="w-full max-w-md bg-gray-800 rounded-xl shadow-2xl p-8 border border-gray-700">
-        <div className="flex flex-col items-center">
-          <FaUserCircle size={80} className="text-gray-400 mb-4" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-gray-900 to-blue-800 flex flex-col items-center justify-center p-4 font-sans">
+      <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700 flex flex-col items-center">
+        {/* Avatar */}
+        <div className="flex flex-col items-center mb-4">
+          {user?.photoURL ? (
+            <img
+              src={user.photoURL}
+              alt="User Avatar"
+              className="w-20 h-20 rounded-full object-cover mb-2 border-4 border-blue-600"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center mb-2">
+              <span className="text-4xl font-bold text-white">
+                {user?.displayName?.[0]?.toUpperCase() || "U"}
+              </span>
+            </div>
+          )}
           {!editMode ? (
             <>
-              <h1 className="text-2xl font-semibold mb-2">
+              <h1 className="text-2xl font-semibold mb-1">
                 {user?.displayName || "User"}
               </h1>
               <button
@@ -92,7 +144,7 @@ export default function Profile() {
                 className="bg-gray-700 text-white rounded px-3 py-1 text-center mb-2"
                 disabled={updating}
               />
-              <div className="flex gap-2">
+              <div className="flex gap-2 mb-2">
                 <button
                   onClick={async () => {
                     setUpdating(true);
@@ -115,7 +167,11 @@ export default function Profile() {
                   {updating ? "Updating..." : "Save"}
                 </button>
                 <button
-                  onClick={() => setEditMode(false)}
+                  onClick={() => {
+                    setEditMode(false);
+                    setNewName(user?.displayName || "");
+                    setUpdateError("");
+                  }}
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
                 >
                   Cancel
@@ -123,21 +179,43 @@ export default function Profile() {
               </div>
             </>
           )}
-          <p className="text-gray-400 mb-6">{user?.email || "No email"}</p>
-          <div className="w-full flex flex-col space-y-4">
-            <button
-              onClick={handleBackToChat}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
-            >
-              Back to Chat
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
-            >
-              Logout
-            </button>
-          </div>
+          {updateSuccess && (
+            <p className="text-green-400 mb-2">Name updated!</p>
+          )}
+          {updateError && <p className="text-red-400 mb-2">{updateError}</p>}
+        </div>
+
+        {/* Divider */}
+        <div className="w-full border-t border-gray-600 my-4"></div>
+
+        {/* User Info */}
+        <div className="w-full flex flex-col items-center mb-6">
+          <p className="text-gray-400 mb-1">
+            <span className="font-semibold text-white">Email:</span>{" "}
+            {user?.email || "No email"}
+          </p>
+          {user?.metadata?.creationTime && (
+            <p className="text-gray-400 mb-1">
+              <span className="font-semibold text-white">Joined:</span>{" "}
+              {new Date(user.metadata.creationTime).toLocaleDateString()}
+            </p>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="w-full flex flex-col space-y-3">
+          <button
+            onClick={handleBackToChat}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-md transition duration-200 text-base w-auto"
+          >
+            Back to Chat
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow-md transition duration-200 text-base w-auto"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </div>
