@@ -46,14 +46,20 @@ export default function SignIn() {
   <div className="p-8 flex justify-center align-center">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-8">
-        <h2 className="text-3xl font-semibold text-white text-center mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 px-4">
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-gray-700 animate-fade-in-up">
+        <h1 className="text-4xl font-extrabold text-center text-white mb-2 tracking-tight drop-shadow-lg font-sans">
+          ChatSphere
+        </h1>
+        <h2 className="text-xl font-semibold text-blue-200 text-center mb-8 tracking-wide">
           Welcome Back
         </h2>
         <form onSubmit={handleSignIn} className="space-y-6">
           <div>
-            <label className="block text-gray-300 mb-2" htmlFor="email">
+            <label
+              className="block text-blue-100 mb-2 font-medium"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -62,12 +68,15 @@ export default function SignIn() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 rounded-xl bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow transition-all duration-200"
               placeholder="Enter your email"
             />
           </div>
           <div>
-            <label className="block text-gray-300 mb-2" htmlFor="password">
+            <label
+              className="block text-blue-100 mb-2 font-medium"
+              htmlFor="password"
+            >
               Password
             </label>
             <div className="relative">
@@ -77,13 +86,14 @@ export default function SignIn() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 pr-12 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 pr-12 rounded-xl bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow transition-all duration-200"
                 placeholder="Enter your password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-grey cursor-pointer transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-400 transition-colors"
+                tabIndex={-1}
               >
                 {showPassword ? (
                   <svg
@@ -125,7 +135,7 @@ export default function SignIn() {
           </div>
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white font-semibold"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition text-white font-semibold shadow-lg transform hover:scale-105 duration-200"
           >
             Sign In
           </button>
@@ -134,7 +144,7 @@ export default function SignIn() {
         <div className="mt-6">
           <button
             onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-white text-gray-700 font-semibold shadow-sm hover:shadow-md transition border border-gray-300"
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-white/90 text-gray-700 font-semibold shadow-sm hover:shadow-md transition border border-gray-300 hover:bg-blue-50"
           >
             <svg
               className="w-5 h-5"
@@ -162,13 +172,32 @@ export default function SignIn() {
           </button>
         </div>
 
-        <p className="text-sm text-gray-400 text-center mt-6">
+        <p className="text-sm text-blue-100 text-center mt-6">
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-400 hover:underline">
+          <a
+            href="/signup"
+            className="text-blue-400 hover:underline font-semibold"
+          >
             Sign Up
           </a>
         </p>
       </div>
+      {/* Animations */}
+      <style jsx>{`
+        .animate-fade-in-up {
+          animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
