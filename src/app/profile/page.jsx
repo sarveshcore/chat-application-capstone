@@ -4,7 +4,6 @@ import { auth } from "../../firebase/config";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { signOut, updateProfile } from "firebase/auth";
-import { FaUserCircle } from "react-icons/fa";
 
 export default function Profile() {
   const [user, loading, error] = useAuthState(auth);
@@ -15,9 +14,9 @@ export default function Profile() {
   const [updateError, setUpdateError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [photoFile, setPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(user?.photoURL || "");
-  const [photoUploading, setPhotoUploading] = useState(false);
-  const [photoError, setPhotoError] = useState("");
+  // const [photoPreview, setPhotoPreview] = useState(user?.photoURL || "");
+  // const [photoUploading, setPhotoUploading] = useState(false);
+  // const [photoError, setPhotoError] = useState("");
 
   // Redirect to signup if not authenticated
   useEffect(() => {
@@ -62,32 +61,32 @@ export default function Profile() {
     }
   };
 
-  const handlePhotoUpload = async () => {
-    if (!photoFile) return;
-    setPhotoUploading(true);
-    setPhotoError("");
-    try {
-      // Upload to a storage service (Firebase Storage recommended for production)
-      // For demo: convert to base64 and use as photoURL (not recommended for real apps)
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          await updateProfile(auth.currentUser, { photoURL: reader.result });
-          setPhotoFile(null);
-          setPhotoUploading(false);
-          setPhotoError("");
-          setUpdateSuccess(true);
-        } catch (err) {
-          setPhotoError("Failed to update photo.");
-          setPhotoUploading(false);
-        }
-      };
-      reader.readAsDataURL(photoFile);
-    } catch (err) {
-      setPhotoError("Failed to update photo.");
-      setPhotoUploading(false);
-    }
-  };
+  // const handlePhotoUpload = async () => {
+  //   if (!photoFile) return;
+  //   setPhotoUploading(true);
+  //   setPhotoError("");
+  //   try {
+  //     // Upload to a storage service (Firebase Storage recommended for production)
+  //     // For demo: convert to base64 and use as photoURL (not recommended for real apps)
+  //     const reader = new FileReader();
+  //     reader.onloadend = async () => {
+  //       try {
+  //         await updateProfile(auth.currentUser, { photoURL: reader.result });
+  //         setPhotoFile(null);
+  //         setPhotoUploading(false);
+  //         setPhotoError("");
+  //         setUpdateSuccess(true);
+  //       } catch (err) {
+  //         setPhotoError("Failed to update photo.");
+  //         setPhotoUploading(false);
+  //       }
+  //     };
+  //     reader.readAsDataURL(photoFile);
+  //   } catch (err) {
+  //     setPhotoError("Failed to update photo.");
+  //     setPhotoUploading(false);
+  //   }
+  // };
 
   if (loading) {
     return (
