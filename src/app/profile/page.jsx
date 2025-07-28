@@ -13,12 +13,7 @@ export default function Profile() {
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [photoFile, setPhotoFile] = useState(null);
-  // const [photoPreview, setPhotoPreview] = useState(user?.photoURL || "");
-  // const [photoUploading, setPhotoUploading] = useState(false);
-  // const [photoError, setPhotoError] = useState("");
 
-  // Redirect to signup if not authenticated
   useEffect(() => {
     if (!user && !loading) {
       router.push("/signup");
@@ -46,47 +41,12 @@ export default function Profile() {
     try {
       await updateProfile(auth.currentUser, { displayName: newName });
       setUpdateSuccess(true);
-      // Optionally, reload the page or user state
+      setEditMode(false);
     } catch (err) {
       setUpdateError(err.message);
     }
     setUpdating(false);
   };
-
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPhotoFile(file);
-      setPhotoPreview(URL.createObjectURL(file));
-    }
-  };
-
-  // const handlePhotoUpload = async () => {
-  //   if (!photoFile) return;
-  //   setPhotoUploading(true);
-  //   setPhotoError("");
-  //   try {
-  //     // Upload to a storage service (Firebase Storage recommended for production)
-  //     // For demo: convert to base64 and use as photoURL (not recommended for real apps)
-  //     const reader = new FileReader();
-  //     reader.onloadend = async () => {
-  //       try {
-  //         await updateProfile(auth.currentUser, { photoURL: reader.result });
-  //         setPhotoFile(null);
-  //         setPhotoUploading(false);
-  //         setPhotoError("");
-  //         setUpdateSuccess(true);
-  //       } catch (err) {
-  //         setPhotoError("Failed to update photo.");
-  //         setPhotoUploading(false);
-  //       }
-  //     };
-  //     reader.readAsDataURL(photoFile);
-  //   } catch (err) {
-  //     setPhotoError("Failed to update photo.");
-  //     setPhotoUploading(false);
-  //   }
-  // };
 
   if (loading) {
     return (
@@ -112,7 +72,6 @@ export default function Profile() {
           {user?.photoURL ? (
             <img
               src={user.photoURL}
-              alt="User Avatar"
               className="w-20 h-20 rounded-full object-cover mb-2 border-4 border-blue-600"
             />
           ) : (
@@ -140,6 +99,15 @@ export default function Profile() {
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Enter" &&
+                    !updating &&
+                    newName !== user?.displayName
+                  ) {
+                    handleUpdateName();
+                  }
+                }}
                 className="bg-gray-700 text-white rounded px-3 py-1 text-center mb-2"
                 disabled={updating}
               />
